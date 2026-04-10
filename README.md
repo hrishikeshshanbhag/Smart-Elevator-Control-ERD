@@ -102,7 +102,103 @@ The platform models a **multi-building environment** where:
 
 ![ER Diagram](./smart-elevator-control.png)
 
+## erasor.io code
+<pre>
+ complexs[icon:city]{
+  id serial primary key
+  type varchar(40)
 
+  created_at timestamps
+  updated_at timestamps
+}
+buildings[icon:building]{
+  id serial primary key
+  name varchar(15)
+  complex_id int fk
+
+  created_at timestamps
+  updated_at timestamps
+}
+floors[icon:square]{
+  id serial primary key
+  building_id int fk
+  created_at timestamps
+  updated_at timestamps
+}
+elevator_shaft[icon:pipe]{
+  id serial primary key
+  
+  elevator_id int fk
+  created_at timestamps
+  updated_at timestamps
+}
+elevator[icon:circle]{
+  id serial primary key
+  elevator_status_id int fk
+  building_id int fk
+  created_at timestamps
+  updated_at timestamps
+}
+elevator_status[icon:squares]{
+  id serial primary key
+  type varchar(10)
+}
+
+maintainance_history[icon:book]{
+  id serial primary key
+  downtime int 
+  elevator_id int fk
+  created_at timestamps
+  next_maintainance timestamps
+}
+
+request[icon:message-square]{
+  id serial primary key
+  status enum(fulfilled,pending)
+  source_floor_id int fk
+  destination_floor_id int fk
+  user_id int fk
+
+  created_at timestamps
+  fulfilled_at timestamps
+}
+
+user[icon:user]{
+  id serial pk
+  name varchar(15)
+
+  created_at timestamps
+}
+
+ride[icon:car]{
+  id serial primary key
+  duration int
+  req_id int fk
+  elevator_id int fk
+  start_floor_id int fk
+  end_floor_id int fk
+  started_at timestamps
+  fulfilled_at timestamps
+}
+
+// relations
+complexs.id < buildings.complex_id
+buildings.id < floors.building_id
+
+elevator.id - elevator_shaft.elevator_id
+elevator.id < maintainance_history.elevator_id
+floors.id < request.source_floor_id
+floors.id < request.destination_floor_id
+user.id < request.user_id
+ride.req_id - request.id
+elevator.id < ride.elevator_id
+elevator.elevator_status_id > elevator_status.id
+
+floors.id < ride.start_floor_id
+floors.id < ride.end_floor_id
+
+elevator.building_id > buildings.id
+</pre>
 ## 👨‍💻 Author
 
 **Hrishikesh Shanbhag**
